@@ -12,7 +12,7 @@ const server = express(); // this server is deaf AF. Can't hear ANYTHING. It's l
 
 const PORT = process.env.PORT || 3000; // for Heroku PORT?
 
-app.use(cors());
+server.use(cors());
 
 server.listen(PORT, () => {
   console.log(`Server listening on port ${PORT}`);
