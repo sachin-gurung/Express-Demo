@@ -1,4 +1,5 @@
 const express = require("express");
+const cors = require("cors");
 
 // console.log(process.env.PORT);
 
@@ -7,9 +8,11 @@ const server = express(); // this server is deaf AF. Can't hear ANYTHING. It's l
 
 // tell our server how to process different payloads
 // MIDDLEWARE. We need this line to change the incoming object and change it to readable json file.
-server.use(express.json()); // for parsing application/json
+// server.use(express.json()); // for parsing application/json
 
 const PORT = process.env.PORT || 3000; // for Heroku PORT?
+
+app.use(cors());
 
 server.listen(PORT, () => {
   console.log(`Server listening on port ${PORT}`);
