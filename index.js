@@ -1,5 +1,8 @@
+require("dotenv").config();
+
 const express = require("express");
 const cors = require("cors");
+const axios = require("axios");
 
 // console.log(process.env.PORT);
 
@@ -8,7 +11,7 @@ const server = express(); // this server is deaf AF. Can't hear ANYTHING. It's l
 
 // tell our server how to process different payloads
 // MIDDLEWARE. We need this line to change the incoming object and change it to readable json file.
-// server.use(express.json()); // for parsing application/json
+server.use(express.json()); // for parsing application/json
 
 const PORT = process.env.PORT || 3000; // for Heroku PORT?
 
@@ -78,38 +81,6 @@ server.get("/students/interests/:interests", (req, res) => {
   }
 });
 
-// server.get("/students/interests/:interests", (req, res) => {
-//   const { interests } = req.params;
-
-//   if (interests) {
-//     const filteredStudents = Object.values(students).filter(
-//       (student) => student.interests.toLowerCase() === interests.toLowerCase()
-//     );
-
-//     return res.send(filteredStudents);
-//   }
-// });
-
-// server.get("/students/interest/:interest", (req, res) => {
-//   const { interest } = req.params;
-//   if (interest) {
-//     const filteredStudents = Object.values(students).filter(
-//       (student) => student.interest.toLowerCase() === interest.toLowerCase()
-//     );
-//     return res.send(filteredStudents);
-//   }
-// });
-
-// server.get("students/interests/:interests", (req, res) => {
-//   const { interests } = req.params;
-//   if (interests) {
-//     const filteredStudents = Object.values(students).filter((student) =>
-//       student.interest.includes(interests.toLowerCase())
-//     );
-//     return res.send(filteredStudents);
-//   }
-// });
-
 // Query Param =======================================================
 
 server.get("/students", (req, res) => {
@@ -142,9 +113,9 @@ server.get("/students", (req, res) => {
 });
 
 // CREATE => POST
-server.post("/destinations", (req, res) => {
+server.post("/destinations", async (req, res) => {
   // ONLY grab what I need
-  const { destination, location, photo, description } = req.body;
+  const { destination, location, description } = req.body;
 
   // VALIDATE that input is validate (i.e. destination and location are BOTH present and NOT empty strings)
   if (
@@ -158,12 +129,22 @@ server.post("/destinations", (req, res) => {
       .send({ error: "Destination AND location are BOTH required" });
   }
 
+  // UNSPLASH API URL with the API_KEY and the location and destination pased inas the query
+  const UnsplashApiUrl = `https://api.unsplash.com/search/photos?query=${destination} ${location}&client_id=${process.env.UNSPLASH_API_KEY}`;
+
+  // Use either Axios or node-fetch to get the photos
+  const { data } = await axios.get(UnsplashApiUrl);
+
+  // Get a random photo from data.results
+  const photos = data.results;
+  const randIdx = Math.floor(Math.random() * photos.length);
+
   // Create the new object to put in my database
   const newDest = {
     destination,
     location,
-    photo: photo && photo.length !== 0 ? photo : "al;dfjkaslfjaslkfjaskl",
-    description: description && description.length !== 0 ? description : "",
+    photo: photos[randIdx].urls.small,
+    description: description ? description : "",
   };
 
   destinations.push(newDest);
