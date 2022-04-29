@@ -67,9 +67,8 @@ server.get("/students/interests/:interests", (req, res) => {
   const { interests } = req.params;
 
   if (interests) {
-    const filteredStudents = Object.values(students).filter(
-      (student) =>
-        student["interests"].toLowerCase() === interests.toLowerCase()
+    const filteredStudents = Object.values(students).filter((student) =>
+      student.interests.includes(interests.toLowerCase())
     );
 
     return res.send(filteredStudents);
