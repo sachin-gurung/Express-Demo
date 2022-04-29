@@ -109,34 +109,34 @@ server.get("/students/interests/:interests", (req, res) => {
 
 // Query Param =======================================================
 
-// server.get("/students", (req, res) => {
-//   const { name, interest, city } = req.query; // this will make sure we only receive name, interests and city and all other input keys will be ignored.
+server.get("/students", (req, res) => {
+  const { name, interest, city } = req.query; // this will make sure we only receive name, interests and city and all other input keys will be ignored.
 
-//   if (name) {
-//     const student = students[name.toLowerCase()]; // changes the input to lower case
-//     if (student) {
-//       return res.send(student); // early return
-//     }
-//     return res // early return. Using return will make sure the code stops if it reaches this point.
-//       .status(404)
-//       .send({ error: `Student by the name of ${name} could not be found` });
-//   }
+  if (name) {
+    const student = students[name.toLowerCase()]; // changes the input to lower case
+    if (student) {
+      return res.send(student); // early return
+    }
+    return res // early return. Using return will make sure the code stops if it reaches this point.
+      .status(404)
+      .send({ error: `Student by the name of ${name} could not be found` });
+  }
 
-//   let filteredStudents = Object.values(students); // This is because interests is an object []
-//   if (interest) {
-//     filteredStudents = Object.values(students).filter((student) => {
-//       return student.interests.includes(interest.toLowerCase());
-//     });
-//   }
+  let filteredStudents = Object.values(students); // This is because interests is an object []
+  if (interest) {
+    filteredStudents = Object.values(students).filter((student) => {
+      return student.interests.includes(interest.toLowerCase());
+    });
+  }
 
-//   if (city) {
-//     filteredStudents = Object.values(filteredStudents).filter(
-//       (student) => student.city.toLowerCase() === city.toLowerCase()
-//     );
-//   }
+  if (city) {
+    filteredStudents = Object.values(filteredStudents).filter(
+      (student) => student.city.toLowerCase() === city.toLowerCase()
+    );
+  }
 
-//   return res.send(filteredStudents);
-// });
+  return res.send(filteredStudents);
+});
 
 // CREATE => POST
 server.post("/destinations", (req, res) => {
